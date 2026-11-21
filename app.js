@@ -21,7 +21,7 @@ const pool = mysql2.createPool({
 }).promise();
 
 async function get_root(req, res) {
-    let [jobs] = await pool.execute(`SELECT * FROM jobs`);
+    let [jobs] = await pool.execute(`SELECT * FROM jobs WHERE close_date >= CURDATE() ORDER BY post_date DESC, id DESC`);
     res.render('index', {jobs});
 }
 

@@ -75,16 +75,23 @@
     </div>
     <script>
     function render_clean_dt(data, type, row) {
+        if (!data) return '';
+
+        const date = new Date(data);
+
+        if (type === 'sort' || type === 'type') {
+            return date.getTime();
+        }
+
         if (type === 'display' || type === 'filter') {
-            if (!data) return '';
-            const date = new Date(data);
-            return date.toLocaleDateString('en-US');
+            return date.toLocaleDateString('en-US', { timeZone: 'UTC' });
         }
         return data;
     }
 
     new DataTable('#job-table', {
             responsive: true,
+            order: [[4, 'desc']], // order setting ensures that table will show the newest jobs first
             columns: [
                 null,
                 null,
