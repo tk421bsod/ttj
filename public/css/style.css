@@ -1,3 +1,20 @@
+:root {
+    --bs-primary: #2C882B;
+    --bs-secondary: #006225;
+}
+
+.btn-primary{
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-secondary);
+    --bs-btn-hover-border-color: var(--bs-secondary);
+    --bs-btn-focus-shadow-rgb: 0, 98, 37;
+    --bs-btn-active-bg: var(--bs-secondary);
+    --bs-btn-active-border-color: var(--bs-secondary);
+
+    transition: background-color 200ms;
+}
+
 .navbar-bg {
     overflow: hidden;
 }
