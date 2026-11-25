@@ -35,19 +35,19 @@ async function get_view_job(req, res) {
     let [job] = await pool.execute(`SELECT * FROM jobs WHERE uuid = ?`, [job_id]);
     console.log(job);
     if (!job?.length) {
-        return res.status(400).send("<h1>Sorry, that job ID is invalid.</h1><p>Check the job ID and try again.</p>");
+        return res.status(400).render("error", { header:"Sorry, that job ID is invalid.", details:"Check the job ID and try again."});
     }
     job = job[0];
     res.render('view-job', { job });
 }
 
+// Return whether a checkbox field was checked
 function handle_checkbox_field(f) {
     return f ? 1 : 0;
 }
 
 async function save_job(req, res) {
     let job = req.body;
-    console.log(job)
 
     job.is_paid = handle_checkbox_field(job.is_paid);
     job.is_internship = handle_checkbox_field(job.is_internship);
@@ -56,13 +56,12 @@ async function save_job(req, res) {
         const sql = `INSERT INTO jobs(title, company, location, post_date, close_date, trade, internship, type, is_paid, compensation, description, posting_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         const params = [job.title, job.company, job.location, job.post_date, job.close_date, job.trade, job.is_internship, job.type, job.is_paid, job.compensation, job.description, job.posting_link];
         let [result, fields] = await pool.execute(sql, params);
-        console.log(result.insertId);
+        // Get the UUID for the new job (passed to confirmation page for future use)
         [result] = await pool.execute(`SELECT * FROM jobs WHERE id = ?`, [result.insertId]);
         job.uuid = result[0].uuid;
         res.render('confirmation', { job });
     } catch (err) {
-        console.log(err);
-        res.status(500).send("<h1>Sorry, your job couldn't be saved.</h1><p>Please try again later.</p>")
+        res.status(500).render("error", { header:"Sorry, your job couldn't be saved.", details:"Please try again later."})
     }
 }
 
